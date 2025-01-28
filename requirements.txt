@@ -10,3 +10,8 @@ pydantic
 langchain-openai
 langchain_core
 python-dotenv
+transformers
+torch
+scikit-learn
+datasets
+spacy

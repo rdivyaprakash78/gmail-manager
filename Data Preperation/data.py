@@ -3,6 +3,9 @@ from googleapiclient.errors import HttpError
 from auth import main as get_gmail_service  # Import the main function from auth.py
 import base64
 import datetime
+import os
+
+
 
 
 def decode_base64url(data):
@@ -67,18 +70,25 @@ def fetch_emails_for_keywords_and_combinations(keyword_combinations, output_file
                 if not body:
                     body = "No body content found."
 
+                # Construct the link to the email
+                email_link = f"https://mail.google.com/mail/u/0/#inbox/{message['id']}"
+
                 # Append the email details to the email_data list
                 email_data.append({
                     "from": sender,
                     "subject": subject,
                     "body": body,
                     "received_time": received_time,
-                    "keywords": keywords  # Include the keyword(s) in the output
+                    "keywords": keywords,  # Include the keyword(s) in the output
+                    "email_link": email_link,  # Add the email link
+                    "email_id": message['id']  # Add the email id
                 })
 
+        os.chdir(r"C:/Hackathon/Gmail RAG/New Data")
         # Write the email data to a CSV file (storing all results in the same file)
         with open(output_file, mode='w', newline='', encoding='utf-8') as file:
-            writer = csv.DictWriter(file, fieldnames=["from", "subject", "body", "received_time", "keywords"])
+            fieldnames = ["from", "subject", "body", "received_time", "keywords", "email_link", "email_id"]
+            writer = csv.DictWriter(file, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(email_data)
 
